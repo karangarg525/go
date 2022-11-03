@@ -3,14 +3,23 @@ package main
 import (
 	"fmt"
 	"firstapp/greet"
-	"strconv"
 )
+
+type userData struct {
+	firstName string
+	lastName string
+	email string
+	noOfTickets int
+}
 
 func main() {
 	var conferenceName string = "Go Conference"
 	var conferenceTickets int = 50
 	var remainingTickets int = 50
-	var bookings = make([]map[string]string, 0)
+	// var bookings = make([]map[string]string, 0)
+	var bookings = make([]userData, 0)
+
+
 
 	greet.GreetUser(conferenceName, conferenceTickets, remainingTickets)
 
@@ -55,24 +64,25 @@ func getUserDetails() (string, string, string, int) {
 	return firstName, lastName, email, noOfTickets
 }
 
-func bookTicket(firstName string, lastName string, noOfTickets int, email string, remainingTickets int, bookings []map[string]string) ([]map[string]string, int) {
+func bookTicket(firstName string, lastName string, noOfTickets int, email string, remainingTickets int, bookings []userData) ([]userData, int) {
 	remainingTickets = remainingTickets - noOfTickets
 	fmt.Printf("Hi, %v %v, You have booked %v tickets. You will get the confirmation on %v.\nNow there are %v tickets left\n", firstName, lastName, noOfTickets, email, remainingTickets)
 
-	// Creating a Map for a user
-	var userData = make(map[string]string) 
-	userData["firstName"] = firstName
-	userData["lastName"] = lastName
-	userData["email"] = email
-	userData["noOfTickets"] = strconv.Itoa(noOfTickets)
+	// Creating a Struct for a user
+	var userData = userData { 
+		firstName: firstName,
+		lastName: lastName,
+		email: email,
+		noOfTickets: noOfTickets,
+	}
 
 	return append(bookings, userData), remainingTickets
 }
 
-func printFirstNames(bookings []map[string]string) {
+func printFirstNames(bookings []userData) {
 	var firstNames []string
 	for _, booking := range bookings {
-		firstNames = append(firstNames, booking["firstName"])
+		firstNames = append(firstNames, booking.firstName)
 	}
 	fmt.Printf("Bookings: %v\n", firstNames)
 	fmt.Println(bookings)
