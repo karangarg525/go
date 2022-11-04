@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"firstapp/greet"
+	"time"
+	"sync"
 )
 
 type userData struct {
@@ -11,6 +13,8 @@ type userData struct {
 	email string
 	noOfTickets int
 }
+
+var wg sync.WaitGroup
 
 func main() {
 	var conferenceName string = "Go Conference"
@@ -33,15 +37,18 @@ func main() {
 
 		bookings, remainingTickets = bookTicket(firstName, lastName, noOfTickets, email, remainingTickets, bookings)
 		
+		go sendEmail()
+		wg.Add(1)
+
 		printFirstNames(bookings)
 		
 		if remainingTickets == 0 {
 			fmt.Println("We are sold out!!!")
 			break
 		}
-
 	}
-
+	
+	wg.Wait() // It will wait until the waitGroup threads are completed, even if the loop is not there
 }
 
 
@@ -86,4 +93,12 @@ func printFirstNames(bookings []userData) {
 	}
 	fmt.Printf("Bookings: %v\n", firstNames)
 	fmt.Println(bookings)
+}
+
+func sendEmail() {
+	time.Sleep(10 * time.Second)
+	fmt.Println("==================================")
+	fmt.Println("Email Sent!!!")
+	fmt.Println("==================================")
+	wg.Done()
 }
